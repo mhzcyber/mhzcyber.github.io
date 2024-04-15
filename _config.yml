@@ -20,7 +20,7 @@ title: "The Sience of Hacking"
 title_separator: "-"
 subtitle: # site tagline that appears below site title in masthead
 name: "Mohammad Hussam Alzeyyat"
-description: "Let me show you the sience of hacking 😈"
+description: "Let me teach you the science of hacking 😈"
 url: # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
 baseurl: / # the subpath of your site, e.g. "/blog"
 repository: # GitHub username/repo-name e.g. "mmistakes/minimal-mistakes"
@@ -94,7 +94,7 @@ analytics:
 author:
   name: "Mohammad Hussam Alzeyyat"
   avatar: /assets/images/the-science-of-hacking2.jpg # path of avatar image, e.g. "/assets/images/bio-photo.jpg"
-  bio: "Let me show you the sience of hacking 😈"
+  bio: "Let me teach you the science of hacking 😈"
   # location: "Area 51"
   email:
   links:
