@@ -6,5 +6,8 @@ header:
 ribbon: red
 description: "The art of shellcodeing, Let's write the stager"
 tags: the-art-of-shellcoding
+categories:
+  - Coming Soon
+toc:  true
 ---
 # x86 Intel Assembly
