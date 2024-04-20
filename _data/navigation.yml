@@ -1,6 +1,6 @@
 # main links
 main:
-  - title: "Windown Exploit Development"
+  - title: "Windows Exploit Development"
     url: /win-exploit-development
   - title: "The Art of Shellcoding"
     url: /the-art-of-shellcoding
