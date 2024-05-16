@@ -112,7 +112,7 @@ author:
       url: "https://the-science-of-hacking.com/"
     - label: "Twitter"
       icon: "fab fa-fw fa-twitter-square"
-      url: "https://twitter.com/the-science-of-hacking"
+      #url: "https://twitter.com/the-science-of-hacking"
     - label: "Facebook Group AR"
       icon: "fab fa-fw fa-facebook-square"
       url: "https://www.facebook.com/groups/1095789905058617/"
