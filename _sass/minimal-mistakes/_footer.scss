@@ -16,7 +16,8 @@
   -webkit-animation-delay: 0.45s;
   animation-delay: 0.45s;
   background-color: $footer-background-color;
-
+  text-align: center;
+   
   footer {
     @include clearfix;
     margin-left: auto;
@@ -82,5 +83,11 @@
     a {
       white-space: nowrap;
     }
+  }
+
+  .social-icons li:first-child {
+    display: block; /* Makes the label a block to put it on its own line */
+    margin-bottom: 15px; /* Space below the label */
+    font-weight: bold; /* Makes the label bold */
   }
 }
