@@ -100,13 +100,32 @@ author:
   links:
     - label: "Linkedin"
       icon: "fab fa-linkedin"
+      url: "https://linkedin.com/company/the-science-of-hacking"
+    - label: Discord
+      url: "https://discord.gg/XcRGrefaVR"
+      icon: "fab fa-discord"
+    - label: YouTube
+      icon: "fab fa-youtube"
+      url: "http://www.youtube.com/@the-science-of-hacking"
+    - label: "Website"
+      icon: "fas fa-fw fa-link"
+      url: "https://the-science-of-hacking.com/"
+    - label: "Twitter"
+      icon: "fab fa-fw fa-twitter-square"
+      url: "https://twitter.com/the-science-of-hacking"
+    - label: "Facebook Group AR"
+      icon: "fab fa-fw fa-facebook-square"
+      url: "https://www.facebook.com/groups/1095789905058617/"
+
+# Site Footer
+footer:
+  links:
+    - label: "Linkedin"
+      icon: "fab fa-linkedin"
       url: "https://www.linkedin.com/in/mhzcyber/"
     - label: "Email"
       icon: "fas fa-fw fa-envelope-square"
       url: "mailto:hussamalzeyyat@gmail.com"
-    - label: "Website"
-      icon: "fas fa-fw fa-link"
-      url: "https://the-science-of-hacking.com/"
     - label: "Twitter"
       icon: "fab fa-fw fa-twitter-square"
       url: "https://twitter.com/mhz_cyber"
@@ -119,28 +138,6 @@ author:
     - label: "Instagram"
       icon: "fab fa-fw fa-instagram"
       url: "https://instagram.com/mhzcyber"
-
-# Site Footer
-footer:
-  links:
-    - label: "Twitter"
-      icon: "fab fa-fw fa-twitter-square"
-      # url:
-    - label: "Facebook"
-      icon: "fab fa-fw fa-facebook-square"
-      # url:
-    - label: "GitHub"
-      icon: "fab fa-fw fa-github"
-      # url:
-    - label: "GitLab"
-      icon: "fab fa-fw fa-gitlab"
-      # url:
-    - label: "Bitbucket"
-      icon: "fab fa-fw fa-bitbucket"
-      # url:
-    - label: "Instagram"
-      icon: "fab fa-fw fa-instagram"
-      # url:
 
 # Reading Files
 include:
