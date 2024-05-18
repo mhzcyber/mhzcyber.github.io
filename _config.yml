@@ -106,7 +106,7 @@ author:
       icon: "fab fa-discord"
     - label: YouTube
       icon: "fab fa-youtube"
-      url: "http://www.youtube.com/@the-science-of-hacking"
+      url: "http://www.youtube.com/@the-science-of-hacking?sub_confirmation=1"
     - label: "Website"
       icon: "fas fa-fw fa-link"
       url: "https://the-science-of-hacking.com/"
