@@ -11,5 +11,3 @@ categories:
 toc:  true
 ---
 # x86 Intel Assembly
-
-مجرد اختبار لشوف كيف رح تطلع بال shellcoding يا ترا؟
