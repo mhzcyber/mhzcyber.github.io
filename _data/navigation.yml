@@ -1,8 +1,12 @@
 # main links
 main:
-  - title: "Windows Exploit Development"
-    url: /win-exploit-development
-  - title: "The Art of Shellcoding"
-    url: /the-art-of-shellcoding
+  - title: "VulnResearch" 
+    url: /vulnerability-research
+  - title: "ExploitDev"
+    url: /exploitdev
+  - title: "VRED-AR"
+    url: /vred-ar/
+  - title: "General"
+    url: /general
   - title: "About"
     url: /about
