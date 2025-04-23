@@ -1,12 +1,12 @@
 # main links
 main:
   - title: "VulnResearch" 
-    url: /vulnerability-research
+    url: /vulnerability-research/
   - title: "ExploitDev"
-    url: /exploitdev
+    url: /exploitdev/
   - title: "VRED-AR"
     url: /vred-ar/
   - title: "General"
-    url: /general
+    url: /general/
   - title: "About"
-    url: /about
+    url: /about/
