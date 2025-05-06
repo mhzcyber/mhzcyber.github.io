@@ -50,6 +50,8 @@ toc:  true
 
 عملية الثبيت جدا بسيطة و مشروحة هون: https://github.com/AFLplusplus/AFLplusplus/blob/stable/docs/INSTALL.md
 
+</div>
+
 ```bash
 sudo apt-get update
 sudo apt-get install -y build-essential python3-dev automake cmake git flex bison libglib2.0-dev libpixman-1-dev python3-setuptools cargo libgtk-3-dev
@@ -66,7 +68,11 @@ make distrib
 sudo make install
 ```
 
+<div class="rtl-content" markdown="1">
+
 لما يخلص التثبيت لازم تلاقي كل اوامر afl موجودة:
+
+</div>
 
 ```bash
  afl-
@@ -77,7 +83,7 @@ afl-cc                 afl-clang-lto++        afl-gcc-fast           afl-network
 afl-clang              afl-cmin               afl-g++-fast           afl-network-server     afl-whatsup
 afl-clang++            afl-cmin.bash          afl-gotcpu             afl-persistent-config
 ```
-</div>
+
 
 ## Compiling LOLCODE with AFL++ and ASAN
 
@@ -101,6 +107,8 @@ afl-clang++            afl-cmin.bash          afl-gotcpu             afl-persist
 
 بالاول منزل LOLCODE
 
+</div>
+
 ```bash
 # Clone the lci repository (LOLCODE compiler)
 git clone https://github.com/justinmeza/lci.git
@@ -111,7 +119,11 @@ make clean
 rm -f CMakeCache.txt
 ```
 
+<div class="rtl-content" markdown="1">
+
 بعدين منعين متغيرات البيئة - environment variables بحيث المجمع compiler يستخدم AFL++ مع ASAN.
+
+</div>
 
 ```bash
 # Set environment variables for the compiler to use AFL++ with ASAN
@@ -121,6 +133,8 @@ export CFLAGS="-fsanitize=address -g -O1 -fno-omit-frame-pointer"
 export CXXFLAGS="-fsanitize=address -g -O1 -fno-omit-frame-pointer"
 export LDFLAGS="-fsanitize=address"
 ```
+
+<div class="rtl-content" markdown="1">
 
 - `export CC=afl-cc` and `export CXX=afl-c++`: كرمال نحدد المجمع compilter كرمال يستخدم ال AFL++ Compilter ليبني البرنامج
 
@@ -133,6 +147,9 @@ export LDFLAGS="-fsanitize=address"
 - `make`: لبناء البرنامج 
 
 الان منعمل الكونفيغ و بنعمل build
+
+</div>
+
 ```bash
 # Configure using CMake
 cmake .
@@ -141,13 +158,17 @@ cmake .
 make
 ```
 
+<div class="rtl-content" markdown="1">
+
 أحيانا بصير مشاكل و بكتمل بناء البرنامج بس مابتم دمج ASAN معه ف لازم نتأكد:
+
+</div>
 
 ```bash
 # Verify ASAN is included in the compiled program
 ldd ./lci | grep asan
 ```
-</div>
+
 
 # Let the fuzzing starts
 
@@ -155,12 +176,16 @@ ldd ./lci | grep asan
 
 بالاول بس منجهز المجلدات لاجل الفازينغ
 
+</div>
+
 ```bash
 # Create directory structure for fuzzing
 mkdir -p ../fuzzing/in ../fuzzing/out
 ```
 
 ## Creating Seeds for fuzzing
+
+<div class="rtl-content" markdown="1">
 
 نحن قلنا من قبل انو ال seeds ببساطة هي المدخلات, وهي بتكون المدخلات الأولية الي انت بتجمعها او بتعملها بطرق مختلفة و هي تسمى seeds
 
@@ -171,6 +196,8 @@ mkdir -p ../fuzzing/in ../fuzzing/out
 التاني فيه متغيرات اكتر, الي بعدها فيه conditionals
 الي بصير ان كل مرة ال CLI compiler الخاصة ل LOLCODE بشغل واحد من البرامج هي رح يوصل لأجزء مختلفة من ال CLI
 بالتالي منحقق التغطية او ال coverage.
+
+</div>
 
 ```bash
 # Create a simple "Hello World" program
@@ -204,8 +231,6 @@ IM OUTTA YR LOOP
 KTHXBYE' > ../fuzzing/in/loop.lol
 ```
 
-</div>
-
 ## Fuzzer Go
 
 <div class="rtl-content" markdown="1">
@@ -213,6 +238,8 @@ KTHXBYE' > ../fuzzing/in/loop.lol
 منعين متغير لاجل ال ASAN
 
 بعدها منقدر نشغل ال fuzzer
+
+</div>
 
 ```bash
 # Set ASAN environment variables
@@ -223,6 +250,8 @@ cd ~/lci-fuzz/lci
 afl-fuzz -i ../fuzzing/in -o ../fuzzing/out -m none -- ./lci @@
 ```
 
+<div class="rtl-content" markdown="1">
+
 - `-i ../fuzzing/in`: هاد المجلد في فيه المدخلات الأولية
 - `-o ../fuzzing/out`: المجلد الي بتتخزن فيه النتائج
 - `-m none`: ب AFL بكون في حد لقديش البرنامج المستخدم مسمحله يخصص و يتسخدم من الذاكرة - الميموري. لما نستخدم ASAN من خبرتي لازم يكون الحد none لانو اصلا ASAN شغلته يلقط المشاكل بالذاكرة.
@@ -230,6 +259,8 @@ afl-fuzz -i ../fuzzing/in -o ../fuzzing/out -m none -- ./lci @@
 
 
 لما تشغل ال fuzzer احتمال يجيك رسالة مشابهة:
+
+</div>
 
 ```bash
 afl-fuzz++4.32c based on afl by Michal Zalewski and a large online community
@@ -258,13 +289,21 @@ afl-fuzz++4.32c based on afl by Michal Zalewski and a large online community
          Location : check_crash_handling(), src/afl-fuzz-init.c:2547
 ```
 
+<div class="rtl-content" markdown="1">
+
 كل ماعليك او تنفذ الأمر التالي:
+
+</div>
 
 ```bash
 echo core | sudo tee /proc/sys/kernel/core_pattern
 ```
 
+<div class="rtl-content" markdown="1">
+
 و ترجع تشغل ال fuzzer مرة تانية و لازم هلق يجيك شي مشابه:
+
+</div>
 
 ```bash
             american fuzzy lop ++4.32c {default} (./lci) [explore]
@@ -297,6 +336,8 @@ echo core | sudo tee /proc/sys/kernel/core_pattern
 [+] fastresume.bin successfully written with 1094386 bytes.
 [+] We're done here. Have a nice day!
 ```
+
+<div class="rtl-content" markdown="1">
 
 نشرح الداشبورد الخاصة ب AFL++:
 
@@ -335,10 +376,14 @@ echo core | sudo tee /proc/sys/kernel/core_pattern
 
 ## Analyzing the Crashes
 
+<div class="rtl-content" markdown="1">
+
 متل ما شايفين لقينا اكتر من كراش, ف صار وقت تحليل الكراشات.
 نحن هون مارح نعمل تحليل كامل, بس رح نرجع نشغل ال CLI مع الملف الي بسبب الكراش.
 
 تحليل الكراشات مهارة و علم كامل لوحده و ممكن اخصصله مقال لقدام ان شاء الله.
+
+</div>
 
 ```bash
 # Display discovered crashes
@@ -410,6 +455,8 @@ Shadow byte legend (one shadow byte represents 8 application bytes):
 Aborted (core dumped)
 ```
 
+<div class="rtl-content" markdown="1">
+
 طبعا هي الثغرة عبارة عن Heap Buffer Overflow.
 
 ملخص الي مرينا عليه و اتعلمناه هون:
@@ -433,3 +480,5 @@ Aborted (core dumped)
 الهدف النهائي هو استخدام الفازينغ لاكتشاف الثغرات الأمنية ومشاكل الذاكرة في برامج حقيقية بطريقة عملية.
 
 هذا والله أعلم 💚
+
+</div>
