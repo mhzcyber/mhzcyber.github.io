@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ROP Chain Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: #eee;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #00ff88;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 30px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 15px;
+            background: transparent;
+            border: none;
+            color: #ccc;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            font-size: 16px;
+        }
+
+        .tab.active {
+            background: #00ff88;
+            color: #000;
+        }
+
+        .tab:hover:not(.active) {
+            background: rgba(0, 255, 136, 0.1);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #00ff88;
+            font-weight: bold;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 2px solid rgba(0, 255, 136, 0.3);
+            border-radius: 8px;
+            color: #eee;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #00ff88;
+            box-shadow: 0 0 10px rgba(0, 255, 136, 0.2);
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .button {
+            background: linear-gradient(45deg, #00ff88, #00cc6a);
+            color: #000;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 255, 136, 0.3);
+        }
+
+        .results {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 1px solid rgba(0, 255, 136, 0.2);
+        }
+
+        .result-item {
+            margin-bottom: 15px;
+            padding: 10px;
+            background: rgba(0, 255, 136, 0.05);
+            border-radius: 5px;
+            border-left: 4px solid #00ff88;
+        }
+
+        .result-label {
+            color: #00ff88;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .result-value {
+            font-family: 'Courier New', monospace;
+            color: #fff;
+        }
+
+        .gadget-entry {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .gadget-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .remove-gadget {
+            background: #ff4444;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .address-input {
+            width: 150px;
+            margin-right: 10px;
+        }
+
+        .chain-summary {
+            background: linear-gradient(45deg, rgba(0, 255, 136, 0.1), rgba(0, 204, 106, 0.1));
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .stat-box {
+            text-align: center;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            color: #00ff88;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            color: #ccc;
+            margin-top: 5px;
+        }
+
+        .hex-display {
+            font-family: 'Courier New', monospace;
+            background: #000;
+            color: #00ff88;
+            padding: 15px;
+            border-radius: 8px;
+            word-break: break-all;
+            line-height: 1.6;
+        }
+
+        .error {
+            background: rgba(255, 68, 68, 0.1);
+            border: 1px solid #ff4444;
+            color: #ff6666;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔗 ROP Chain Calculator</h1>
+        
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('single')">Single Gadget</button>
+            <button class="tab" onclick="switchTab('analyzer')">Chain Analyzer</button>
+        </div>
+
+        <!-- Single Gadget Tab -->
+        <div id="single" class="tab-content active">
+            <div class="input-group">
+                <label>Assembly Instructions</label>
+                <textarea id="singleInstructions" placeholder="pop eax; ret;">pop eax; ret;</textarea>
+            </div>
+            
+            <div class="input-group">
+                <label>Architecture</label>
+                <select id="singleArch">
+                    <option value="x86">x86 (32-bit)</option>
+                    <option value="x64">x64 (64-bit)</option>
+                </select>
+            </div>
+            
+            <button class="button" onclick="calculateSingleGadget()">Calculate Gadget</button>
+            
+            <div id="singleResults" class="results" style="display: none;"></div>
+        </div>
+
+        <!-- Chain Analyzer Tab -->
+        <div id="analyzer" class="tab-content">
+            <div class="input-group">
+                <label>Analysis Mode</label>
+                <select id="analysisMode" onchange="toggleAnalysisMode()">
+                    <option value="addresses">Address Chain Analysis</option>
+                    <option value="instructions">Instruction Analysis</option>
+                </select>
+            </div>
+
+            <div id="addressMode" class="input-group">
+                <label>Raw Chain Data (Hex addresses, space or newline separated)</label>
+                <textarea id="rawChainData" placeholder="0x77c35459 0x77c35460 0x41414141 0x77c35470"></textarea>
+            </div>
+
+            <div id="instructionMode" class="input-group" style="display: none;">
+                <label>Assembly Instructions (one per line or semicolon separated)</label>
+                <textarea id="instructionData" placeholder="pop eax ; ret
+neg eax ; ret
+xchg eax, ebp; ret
+pop eax ; ret
+mov eax, [eax]; ret"></textarea>
+            </div>
+            
+            <div class="input-group">
+                <label>Architecture</label>
+                <select id="analyzerArch">
+                    <option value="x86">x86 (32-bit)</option>
+                    <option value="x64">x64 (64-bit)</option>
+                </select>
+            </div>
+            
+            <button class="button" onclick="analyzeChain()">Analyze Chain</button>
+            
+            <div id="analyzerResults" class="results" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        let gadgetCounter = 0;
+
+        function switchTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab content
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
+
+        function calculateSingleGadget() {
+            const instructions = document.getElementById('singleInstructions').value;
+            const arch = document.getElementById('singleArch').value;
+            
+            try {
+                const gadget = parseGadgetInstructions(instructions, arch);
+                displaySingleResults(gadget);
+            } catch (error) {
+                displayError('singleResults', error.message);
+            }
+        }
+
+        function parseGadgetInstructions(instructions, arch) {
+            // Parse instructions
+            const instList = instructions.split(/[;\n]/).map(inst => inst.trim()).filter(inst => inst);
+            
+            // Estimate instruction sizes
+            let totalInstructionSize = 0;
+            const analyzedInstructions = instList.map(inst => {
+                const size = estimateInstructionSize(inst, arch);
+                totalInstructionSize += size;
+                return { instruction: inst, size };
+            });
+            
+            return {
+                instructions: analyzedInstructions,
+                totalSize: totalInstructionSize,
+                arch
+            };
+        }
+
+        function parseGadget(address, instructions, arch) {
+            // Validate address
+            const cleanAddress = address.replace(/^0x/i, '');
+            if (!/^[0-9a-f]+$/i.test(cleanAddress)) {
+                throw new Error('Invalid address format');
+            }
+            
+            const addressValue = parseInt(cleanAddress, 16);
+            const addressSize = arch === 'x64' ? 8 : 4;
+            
+            // Parse instructions
+            const instList = instructions.split(/[;\n]/).map(inst => inst.trim()).filter(inst => inst);
+            
+            // Estimate instruction sizes (simplified)
+            let totalInstructionSize = 0;
+            const analyzedInstructions = instList.map(inst => {
+                const size = estimateInstructionSize(inst, arch);
+                totalInstructionSize += size;
+                return { instruction: inst, size };
+            });
+            
+            return {
+                address: addressValue,
+                addressHex: '0x' + addressValue.toString(16).padStart(addressSize * 2, '0'),
+                instructions: analyzedInstructions,
+                totalSize: totalInstructionSize,
+                arch,
+                addressSize
+            };
+        }
+
+        // Enhanced instruction size estimation with accurate x86 encoding tables
+        function estimateInstructionSize(instruction, arch) {
+            const inst = instruction.toLowerCase().trim();
+            
+            // x86 instruction encoding database
+            const x86Instructions = {
+                // Single byte instructions
+                'ret': 1,           // C3
+                'retn': 1,          // C3
+                'nop': 1,           // 90
+                'pushad': 1,        // 60
+                'popad': 1,         // 61
+                'pushfd': 1,        // 9C
+                'popfd': 1,         // 9D
+                'cwd': 1,           // 99
+                'cdq': 1,           // 99
+                'sahf': 1,          // 9E
+                'lahf': 1,          // 9F
+                'movsb': 1,         // A4
+                'movsw': 1,         // 66 A5 (2 bytes with prefix)
+                'movsd': 1,         // A5
+                'cmpsb': 1,         // A6
+                'cmpsw': 1,         // 66 A7 (2 bytes with prefix)
+                'cmpsd': 1,         // A7
+                'stosb': 1,         // AA
+                'stosw': 1,         // 66 AB (2 bytes with prefix)
+                'stosd': 1,         // AB
+                'lodsb': 1,         // AC
+                'lodsw': 1,         // 66 AD (2 bytes with prefix)
+                'lodsd': 1,         // AD
+                'scasb': 1,         // AE
+                'scasw': 1,         // 66 AF (2 bytes with prefix)
+                'scasd': 1,         // AF
+                'leave': 1,         // C9
+                'int3': 1,          // CC
+                'into': 1,          // CE
+                'iret': 1,          // CF
+                'xlat': 1,          // D7
+                'hlt': 1,           // F4
+                'cmc': 1,           // F5
+                'clc': 1,           // F8
+                'stc': 1,           // F9
+                'cli': 1,           // FA
+                'sti': 1,           // FB
+                'cld': 1,           // FC
+                'std': 1,           // FD
+                
+                // Push/Pop single registers (50-5F)
+                'push eax': 1,      // 50
+                'push ecx': 1,      // 51
+                'push edx': 1,      // 52
+                'push ebx': 1,      // 53
+                'push esp': 1,      // 54
+                'push ebp': 1,      // 55
+                'push esi': 1,      // 56
+                'push edi': 1,      // 57
+                'pop eax': 1,       // 58
+                'pop ecx': 1,       // 59
+                'pop edx': 1,       // 5A
+                'pop ebx': 1,       // 5B
+                'pop esp': 1,       // 5C
+                'pop ebp': 1,       // 5D
+                'pop esi': 1,       // 5E
+                'pop edi': 1,       // 5F
+                
+                // Inc/Dec single registers (40-4F)
+                'inc eax': 1,       // 40
+                'inc ecx': 1,       // 41
+                'inc edx': 1,       // 42
+                'inc ebx': 1,       // 43
+                'inc esp': 1,       // 44
+                'inc ebp': 1,       // 45
+                'inc esi': 1,       // 46
+                'inc edi': 1,       // 47
+                'dec eax': 1,       // 48
+                'dec ecx': 1,       // 49
+                'dec edx': 1,       // 4A
+                'dec ebx': 1,       // 4B
+                'dec esp': 1,       // 4C
+                'dec ebp': 1,       // 4D
+                'dec esi': 1,       // 4E
+                'dec edi': 1,       // 4F
+                
+                // XCHG with EAX (91-97)
+                'xchg eax, ecx': 1, // 91
+                'xchg ecx, eax': 1, // 91
+                'xchg eax, edx': 1, // 92
+                'xchg edx, eax': 1, // 92
+                'xchg eax, ebx': 1, // 93
+                'xchg ebx, eax': 1, // 93
+                'xchg eax, esp': 1, // 94
+                'xchg esp, eax': 1, // 94
+                'xchg eax, ebp': 1, // 95
+                'xchg ebp, eax': 1, // 95
+                'xchg eax, esi': 1, // 96
+                'xchg esi, eax': 1, // 96
+                'xchg eax, edi': 1, // 97
+                'xchg edi, eax': 1, // 97
+            };
+            
+            // Check exact matches first
+            if (x86Instructions[inst]) {
+                return x86Instructions[inst];
+            }
+            
+            // Pattern-based matching for complex instructions
+            
+            // MOV immediate to register (B8-BF + 4 bytes)
+            if (/^mov\s+(eax|ecx|edx|ebx|esp|ebp|esi|edi),\s*0x[0-9a-f]+$/i.test(inst)) {
+                return 5; // B8-BF + 4 byte immediate
+            }
+            if (/^mov\s+(eax|ecx|edx|ebx|esp|ebp|esi|edi),\s*0$/i.test(inst)) {
+                return 5; // B8-BF + 4 byte immediate (00 00 00 00)
+            }
+            if (/^mov\s+(eax|ecx|edx|ebx|esp|ebp|esi|edi),\s*[0-9]+$/i.test(inst)) {
+                return 5; // B8-BF + 4 byte immediate
+            }
+            
+            // Two-byte instructions with ModR/M
+            const twoBytePatterns = [
+                // MOV register to register (89 + ModR/M)
+                /^mov\s+(eax|ecx|edx|ebx|esp|ebp|esi|edi),\s*(eax|ecx|edx|ebx|esp|ebp|esi|edi)$/,
+                
+                // MOV memory to register (8B + ModR/M)
+                /^mov\s+(eax|ecx|edx|ebx|esp|ebp|esi|edi),\s*\[(eax|ecx|edx|ebx|esp|ebp|esi|edi)\]$/,
+                
+                // MOV register to memory (89 + ModR/M)
+                /^mov\s+\[(eax|ecx|edx|ebx|esp|ebp|esi|edi)\],\s*(eax|ecx|edx|ebx|esp|ebp|esi|edi)$/,
+                /^mov\s+dword\s+\[(eax|ecx|edx|ebx|esp|ebp|esi|edi)\],\s*(eax|ecx|edx|ebx|esp|ebp|esi|edi)$/,
+                
+                // Arithmetic operations register to register
+                /^add\s+(eax|ecx|edx|ebx|esp|ebp|esi|edi),\s*(eax|ecx|edx|ebx|esp|ebp|esi|edi)$/,
+                /^sub\s+(eax|ecx|edx|ebx|esp|ebp|esi|edi),\s*(eax|ecx|edx|ebx|esp|ebp|esi|edi)$/,
+                /^and\s+(eax|ecx|edx|ebx|esp|ebp|esi|edi),\s*(eax|ecx|edx|ebx|esp|ebp|esi|edi)$/,
+                /^or\s+(eax|ecx|edx|ebx|esp|ebp|esi|edi),\s*(eax|ecx|edx|ebx|esp|ebp|esi|edi)$/,
+                /^xor\s+(eax|ecx|edx|ebx|esp|ebp|esi|edi),\s*(eax|ecx|edx|ebx|esp|ebp|esi|edi)$/,
+                /^cmp\s+(eax|ecx|edx|ebx|esp|ebp|esi|edi),\s*(eax|ecx|edx|ebx|esp|ebp|esi|edi)$/,
+                /^test\s+(eax|ecx|edx|ebx|esp|ebp|esi|edi),\s*(eax|ecx|edx|ebx|esp|ebp|esi|edi)$/,
+                
+                // Unary operations (F7 + ModR/M or similar)
+                /^neg\s+(eax|ecx|edx|ebx|esp|ebp|esi|edi)$/,
+                /^not\s+(eax|ecx|edx|ebx|esp|ebp|esi|edi)$/,
+                /^mul\s+(eax|ecx|edx|ebx|esp|ebp|esi|edi)$/,
+                /^div\s+(eax|ecx|edx|ebx|esp|ebp|esi|edi)$/,
+                
+                // XCHG non-EAX registers (87 + ModR/M)
+                /^xchg\s+(?!.*eax)(ecx|edx|ebx|esp|ebp|esi|edi),\s*(ecx|edx|ebx|esp|ebp|esi|edi)$/,
+                
+                // LEA (8D + ModR/M)
+                /^lea\s+(eax|ecx|edx|ebx|esp|ebp|esi|edi),\s*\[(eax|ecx|edx|ebx|esp|ebp|esi|edi)\]$/,
+            ];
+            
+            for (const pattern of twoBytePatterns) {
+                if (pattern.test(inst)) {
+                    return 2;
+                }
+            }
+            
+            // Three-byte instructions
+            const threeBytePatterns = [
+                // Return with immediate (C2 + imm16)
+                /^ret\s+0x[0-9a-f]+$/i,
+                /^retn\s+0x[0-9a-f]+$/i,
+                /^ret\s+[0-9]+$/,
+                /^retn\s+[0-9]+$/,
+                
+                // Arithmetic with immediate byte (83 + ModR/M + imm8)
+                /^add\s+(eax|ecx|edx|ebx|esp|ebp|esi|edi),\s*[0-9]+$/,
+                /^sub\s+(eax|ecx|edx|ebx|esp|ebp|esi|edi),\s*[0-9]+$/,
+                /^and\s+(eax|ecx|edx|ebx|esp|ebp|esi|edi),\s*[0-9]+$/,
+                /^or\s+(eax|ecx|edx|ebx|esp|ebp|esi|edi),\s*[0-9]+$/,
+                /^xor\s+(eax|ecx|edx|ebx|esp|ebp|esi|edi),\s*[0-9]+$/,
+                /^cmp\s+(eax|ecx|edx|ebx|esp|ebp|esi|edi),\s*[0-9]+$/,
+                
+                // Short jumps (EB/7x + imm8)
+                /^jmp\s+short\s+/,
+                /^je\s+/, /^jz\s+/, /^jne\s+/, /^jnz\s+/,
+                /^ja\s+/, /^jae\s+/, /^jb\s+/, /^jbe\s+/,
+                /^jg\s+/, /^jge\s+/, /^jl\s+/, /^jle\s+/,
+                /^js\s+/, /^jns\s+/, /^jc\s+/, /^jnc\s+/,
+                /^jo\s+/, /^jno\s+/, /^jp\s+/, /^jnp\s+/,
+            ];
+            
+            for (const pattern of threeBytePatterns) {
+                if (pattern.test(inst)) {
+                    return 3;
+                }
+            }
+            
+            // Five-byte instructions
+            const fiveBytePatterns = [
+                // Near jumps and calls (E9/E8 + imm32)
+                /^jmp\s+(?!short)/,
+                /^call\s+/,
+                
+                // Arithmetic with 32-bit immediate (81 + ModR/M + imm32)
+                /^add\s+(eax|ecx|edx|ebx|esp|ebp|esi|edi),\s*0x[0-9a-f]{5,}$/i,
+                /^sub\s+(eax|ecx|edx|ebx|esp|ebp|esi|edi),\s*0x[0-9a-f]{5,}$/i,
+            ];
+            
+            for (const pattern of fiveBytePatterns) {
+                if (pattern.test(inst)) {
+                    return 5;
+                }
+            }
+            
+            // Six-byte instructions
+            const sixBytePatterns = [
+                // MOV memory with displacement (C7 + ModR/M + disp32 + imm32)
+                /^mov\s+dword\s+\[(eax|ecx|edx|ebx|esp|ebp|esi|edi)\s*[+\-]\s*0x[0-9a-f]+\],\s*0x[0-9a-f]+$/i,
+            ];
+            
+            for (const pattern of sixBytePatterns) {
+                if (pattern.test(inst)) {
+                    return 6;
+                }
+            }
+            
+            // Handle x64 specific patterns
+            if (arch === 'x64') {
+                // REX prefix adds 1 byte to most operations involving 64-bit registers
+                if (/^(mov|add|sub|xor|and|or|cmp|test|neg|not)\s+r(ax|bx|cx|dx|si|di|bp|sp|8|9|1[0-5])/.test(inst)) {
+                    return 3; // REX + opcode + ModR/M
+                }
+                if (/^(push|pop|inc|dec)\s+r(ax|bx|cx|dx|si|di|bp|sp|8|9|1[0-5])/.test(inst)) {
+                    return 2; // REX + opcode
+                }
+                // 64-bit immediate values
+                if (/^mov\s+r(ax|bx|cx|dx|si|di|bp|sp|8|9|1[0-5]),\s*0x[0-9a-f]+$/i.test(inst)) {
+                    return 10; // REX + B8-BF + 8 byte immediate
+                }
+            }
+            
+            // Default fallback - this should rarely be reached with comprehensive patterns
+            console.warn(`Unknown instruction pattern: "${inst}" - using default estimate`);
+            return arch === 'x64' ? 3 : 2;
+        }
+
+        function displaySingleResults(gadget) {
+            const resultsDiv = document.getElementById('singleResults');
+            
+            const html = `
+                <div class="result-item">
+                    <div class="result-label">Instructions Analysis</div>
+                    <div class="result-value">
+                        ${gadget.instructions.map(inst => 
+                            `${inst.instruction} (${inst.size} bytes)`
+                        ).join('<br>')}
+                    </div>
+                </div>
+                
+                <div class="result-item">
+                    <div class="result-label">Total Instruction Size</div>
+                    <div class="result-value">${gadget.totalSize} bytes</div>
+                </div>
+            `;
+            
+            resultsDiv.innerHTML = html;
+            resultsDiv.style.display = 'block';
+        }
+
+        function addGadget() {
+            gadgetCounter++;
+            const gadgetDiv = document.createElement('div');
+            gadgetDiv.className = 'gadget-entry';
+            gadgetDiv.id = `gadget-${gadgetCounter}`;
+            
+            gadgetDiv.innerHTML = `
+                <div class="gadget-header">
+                    <strong>Gadget #${gadgetCounter}</strong>
+                    <button class="remove-gadget" onclick="removeGadget(${gadgetCounter})">Remove</button>
+                </div>
+                
+                <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 10px;">
+                    <input type="text" class="address-input" placeholder="0x77c35459" data-field="address">
+                    <input type="text" style="flex: 1;" placeholder="Assembly instructions" data-field="instructions">
+                </div>
+                
+                <div style="display: flex; gap: 10px;">
+                    <select style="width: 120px;" data-field="arch">
+                        <option value="x86">x86</option>
+                        <option value="x64">x64</option>
+                    </select>
+                    <input type="text" style="flex: 1;" placeholder="Comment (optional)" data-field="comment">
+                </div>
+            `;
+            
+            document.getElementById('gadgetList').appendChild(gadgetDiv);
+        }
+
+        function removeGadget(id) {
+            const gadgetDiv = document.getElementById(`gadget-${id}`);
+            if (gadgetDiv) {
+                gadgetDiv.remove();
+            }
+        }
+
+        function calculateChain() {
+            try {
+                const gadgets = [];
+                const gadgetElements = document.querySelectorAll('.gadget-entry');
+                
+                gadgetElements.forEach((element, index) => {
+                    const address = element.querySelector('[data-field="address"]').value;
+                    const instructions = element.querySelector('[data-field="instructions"]').value;
+                    const arch = element.querySelector('[data-field="arch"]').value;
+                    const comment = element.querySelector('[data-field="comment"]').value;
+                    
+                    if (address && instructions) {
+                        const gadget = parseGadget(address, instructions, arch);
+                        gadget.comment = comment;
+                        gadget.index = index + 1;
+                        gadgets.push(gadget);
+                    }
+                });
+                
+                if (gadgets.length === 0) {
+                    throw new Error('No valid gadgets found');
+                }
+                
+                chainGadgets = gadgets;
+                updateChainSummary();
+                displayChainResults(gadgets);
+                
+            } catch (error) {
+                displayError('chainResults', error.message);
+            }
+        }
+
+        function updateChainSummary() {
+            if (chainGadgets.length === 0) {
+                document.getElementById('chainSummary').style.display = 'none';
+                return;
+            }
+            
+            const totalSize = chainGadgets.reduce((sum, gadget) => sum + gadget.addressSize, 0);
+            const stackOffset = totalSize;
+            
+            document.getElementById('totalGadgets').textContent = chainGadgets.length;
+            document.getElementById('chainSize').textContent = totalSize;
+            document.getElementById('stackOffset').textContent = stackOffset;
+            document.getElementById('chainSummary').style.display = 'block';
+        }
+
+        function displayChainResults(gadgets) {
+            const resultsDiv = document.getElementById('chainResults');
+            
+            let html = '<h3 style="color: #00ff88; margin-bottom: 15px;">ROP Chain Analysis</h3>';
+            
+            gadgets.forEach((gadget, index) => {
+                const offset = gadgets.slice(0, index).reduce((sum, g) => sum + g.addressSize, 0);
+                
+                html += `
+                    <div class="result-item">
+                        <div class="result-label">Gadget #${gadget.index} ${gadget.comment ? '- ' + gadget.comment : ''}</div>
+                        <div class="result-value">
+                            <strong>Address:</strong> ${gadget.addressHex}<br>
+                            <strong>Instructions:</strong> ${gadget.instructions.map(i => i.instruction).join('; ')}<br>
+                            <strong>Stack Offset:</strong> +${offset} bytes<br>
+                            <strong>Size:</strong> ${gadget.addressSize} bytes
+                        </div>
+                    </div>
+                `;
+            });
+            
+            // Generate raw chain data
+            const rawChain = gadgets.map(g => g.addressHex).join(' ');
+            html += `
+                <div class="result-item">
+                    <div class="result-label">Raw Chain Data</div>
+                    <div class="hex-display">${rawChain}</div>
+                </div>
+            `;
+            
+            // Generate Python payload
+            const pythonPayload = gadgets.map(g => `struct.pack("<${g.arch === 'x64' ? 'Q' : 'I'}", ${g.address})`).join(' + ');
+            html += `
+                <div class="result-item">
+                    <div class="result-label">Python Payload</div>
+                    <div class="hex-display">import struct<br>payload = ${pythonPayload}</div>
+                </div>
+            `;
+            
+            resultsDiv.innerHTML = html;
+            resultsDiv.style.display = 'block';
+        }
+
+        function toggleAnalysisMode() {
+            const mode = document.getElementById('analysisMode').value;
+            const addressMode = document.getElementById('addressMode');
+            const instructionMode = document.getElementById('instructionMode');
+            
+            if (mode === 'addresses') {
+                addressMode.style.display = 'block';
+                instructionMode.style.display = 'none';
+            } else {
+                addressMode.style.display = 'none';
+                instructionMode.style.display = 'block';
+            }
+        }
+
+        function analyzeChain() {
+            try {
+                const mode = document.getElementById('analysisMode').value;
+                const arch = document.getElementById('analyzerArch').value;
+                
+                if (mode === 'addresses') {
+                    analyzeAddressChain(arch);
+                } else {
+                    analyzeInstructionChain(arch);
+                }
+                
+            } catch (error) {
+                displayError('analyzerResults', error.message);
+            }
+        }
+        
+        function analyzeAddressChain(arch) {
+            const rawData = document.getElementById('rawChainData').value;
+            const addresses = rawData.split(/[\s\n]+/).filter(addr => addr.trim());
+            const analyzedGadgets = [];
+            
+            addresses.forEach((addr, index) => {
+                const cleanAddr = addr.replace(/^0x/i, '');
+                if (!/^[0-9a-f]+$/i.test(cleanAddr)) {
+                    throw new Error(`Invalid address format: ${addr}`);
+                }
+                
+                const addressValue = parseInt(cleanAddr, 16);
+                const addressSize = arch === 'x64' ? 8 : 4;
+                
+                analyzedGadgets.push({
+                    index: index + 1,
+                    address: addressValue,
+                    addressHex: '0x' + addressValue.toString(16).padStart(addressSize * 2, '0'),
+                    addressSize,
+                    arch,
+                    type: 'address'
+                });
+            });
+            
+            displayAnalyzerResults(analyzedGadgets);
+        }
+        
+        function analyzeInstructionChain(arch) {
+            const instructionData = document.getElementById('instructionData').value;
+            const instructions = instructionData.split(/[;\n]/).map(inst => inst.trim()).filter(inst => inst);
+            const analyzedInstructions = [];
+            
+            let totalSize = 0;
+            instructions.forEach((inst, index) => {
+                const size = estimateInstructionSize(inst, arch);
+                totalSize += size;
+                
+                analyzedInstructions.push({
+                    index: index + 1,
+                    instruction: inst,
+                    size: size,
+                    offset: totalSize - size,
+                    arch,
+                    type: 'instruction'
+                });
+            });
+            
+            displayInstructionAnalysisResults(analyzedInstructions, totalSize);
+        }
+
+        function displayAnalyzerResults(gadgets) {
+            const resultsDiv = document.getElementById('analyzerResults');
+            
+            let html = '<h3 style="color: #00ff88; margin-bottom: 15px;">Address Chain Analysis Results</h3>';
+            
+            const totalSize = gadgets.reduce((sum, gadget) => sum + gadget.addressSize, 0);
+            
+            html += `
+                <div class="result-item">
+                    <div class="result-label">Chain Summary</div>
+                    <div class="result-value">
+                        <strong>Total Gadgets:</strong> ${gadgets.length}<br>
+                        <strong>Total Size:</strong> ${totalSize} bytes<br>
+                        <strong>Architecture:</strong> ${gadgets[0]?.arch || 'Unknown'}<br>
+                        <strong>Note:</strong> This shows address sizes only, not instruction sizes
+                    </div>
+                </div>
+            `;
+            
+            gadgets.forEach((gadget, index) => {
+                const offset = gadgets.slice(0, index).reduce((sum, g) => sum + g.addressSize, 0);
+                
+                html += `
+                    <div class="result-item">
+                        <div class="result-label">Address #${gadget.index}</div>
+                        <div class="result-value">
+                            <strong>Address:</strong> ${gadget.addressHex}<br>
+                            <strong>Stack Offset:</strong> +${offset} bytes<br>
+                            <strong>Address Size:</strong> ${gadget.addressSize} bytes
+                        </div>
+                    </div>
+                `;
+            });
+            
+            resultsDiv.innerHTML = html;
+            resultsDiv.style.display = 'block';
+        }
+
+        function displayInstructionAnalysisResults(instructions, totalSize) {
+            const resultsDiv = document.getElementById('analyzerResults');
+            
+            let html = '<h3 style="color: #00ff88; margin-bottom: 15px;">Instruction Analysis Results</h3>';
+            
+            html += `
+                <div class="result-item">
+                    <div class="result-label">Analysis Summary</div>
+                    <div class="result-value">
+                        <strong>Total Instructions:</strong> ${instructions.length}<br>
+                        <strong>Total Size:</strong> ${totalSize} bytes<br>
+                        <strong>Architecture:</strong> ${instructions[0]?.arch || 'Unknown'}
+                    </div>
+                </div>
+            `;
+            
+            // Group instructions by gadgets (assuming semicolon-separated or ret-terminated gadgets)
+            const gadgets = [];
+            let currentGadget = [];
+            let currentGadgetSize = 0;
+            let gadgetOffset = 0;
+            
+            instructions.forEach((inst, index) => {
+                currentGadget.push(inst.instruction);
+                currentGadgetSize += inst.size;
+                
+                // If instruction is 'ret' or this is the last instruction, end the gadget
+                if (inst.instruction.includes('ret') || index === instructions.length - 1) {
+                    gadgets.push({
+                        index: gadgets.length + 1,
+                        instructions: currentGadget.join(' ; '),
+                        size: currentGadgetSize,
+                        offset: gadgetOffset
+                    });
+                    gadgetOffset += currentGadgetSize;
+                    currentGadget = [];
+                    currentGadgetSize = 0;
+                }
+            });
+            
+            html += `
+                <div class="result-item">
+                    <div class="result-label">Gadget Analysis</div>
+                    <div class="result-value" style="max-height: 300px; overflow-y: auto; background: rgba(0, 0, 0, 0.3); padding: 15px; border-radius: 5px;">
+            `;
+            
+            gadgets.forEach((gadget) => {
+                html += `
+                    <div style="margin-bottom: 10px; padding: 8px; background: rgba(0, 255, 136, 0.05); border-radius: 3px; border-left: 3px solid #00ff88;">
+                        <strong>Gadget #${gadget.index}:</strong> ${gadget.instructions}<br>
+                        <strong>Estimated Size:</strong> ${gadget.size} bytes<br>
+                        <strong>Offset:</strong> +${gadget.offset} bytes
+                    </div>
+                `;
+            });
+            
+            html += `
+                    </div>
+                </div>
+            `;
+            
+            // Generate size breakdown
+            const sizeBreakdown = instructions.reduce((acc, inst) => {
+                acc[inst.size] = (acc[inst.size] || 0) + 1;
+                return acc;
+            }, {});
+            
+            html += `
+                <div class="result-item">
+                    <div class="result-label">Size Distribution</div>
+                    <div class="result-value">
+                        ${Object.entries(sizeBreakdown).map(([size, count]) => 
+                            `<strong>${size} bytes:</strong> ${count} instruction(s)`
+                        ).join('<br>')}
+                    </div>
+                </div>
+            `;
+            
+            resultsDiv.innerHTML = html;
+            resultsDiv.style.display = 'block';
+        }
+
+        function clearChain() {
+            document.getElementById('gadgetList').innerHTML = '';
+            document.getElementById('chainResults').style.display = 'none';
+            document.getElementById('chainSummary').style.display = 'none';
+            chainGadgets = [];
+            gadgetCounter = 0;
+        }
+
+        function formatHexData(value, size) {
+            const hex = value.toString(16).padStart(size * 2, '0');
+            return '0x' + hex + ' (' + hex.match(/.{2}/g).reverse().join(' ') + ' little-endian)';
+        }
+
+        function displayError(containerId, message) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = `<div class="error">Error: ${message}</div>`;
+            container.style.display = 'block';
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // No initialization needed anymore
+        });
+    </script>
+</body>
+</html>
