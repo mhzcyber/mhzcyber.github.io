@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ROP Chain Calculator - Documentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: #eee;
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #00ff88;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            text-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #ccc;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .author {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #888;
+            font-size: 14px;
+        }
+
+        .author strong {
+            color: #00ff88;
+        }
+
+        .nav-links {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+        }
+
+        .nav-links a {
+            color: #00ff88;
+            text-decoration: none;
+            margin: 0 10px;
+            padding: 5px 10px;
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            background: rgba(0, 255, 136, 0.1);
+        }
+
+        h2 {
+            color: #00ff88;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid rgba(0, 255, 136, 0.3);
+            padding-bottom: 8px;
+        }
+
+        h3 {
+            color: #00ff88;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        p {
+            color: #ccc;
+            margin-bottom: 15px;
+        }
+
+        ul {
+            color: #ccc;
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        li {
+            margin-bottom: 5px;
+        }
+
+        li strong {
+            color: #00ff88;
+        }
+
+        .code-block {
+            background: #000;
+            color: #00ff88;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            border: 1px solid rgba(0, 255, 136, 0.2);
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            background: rgba(0, 255, 136, 0.05);
+            border-radius: 10px;
+            border: 1px solid rgba(0, 255, 136, 0.2);
+        }
+
+        .footer p {
+            color: #00ff88;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .footer a {
+            color: #00ff88;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        .footer a:hover {
+            text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔗 ROP Chain Calculator</h1>
+        <div class="subtitle">Precise x86 instruction size analysis for exploit development</div>
+        <div class="author">
+            Created by <strong>Mohammad Hussam Alzeyyat</strong> | <a href="https://the-science-of-hacking.com" style="color: #00ff88; text-decoration: none;">The Science of Hacking</a>
+        </div>
+
+        <div class="nav-links">
+            <a href="index.html">🧮 Use Calculator</a>
+            <a href="https://the-science-of-hacking.com/rop-calculator/" target="_blank">🌐 Live Demo</a>
+            <a href="https://www.linkedin.com/in/mhzcyber/" target="_blank">📧 Contact</a>
+        </div>
+
+        <h2>🚧 Roadmap & Upcoming Features</h2>
+        
+        <h3>🎯 Coming Soon</h3>
+        <ul>
+            <li><strong>🔥 Full x64 Support</strong> - Complete 64-bit instruction database with REX prefixes</li>
+            <li><strong>💪 ARM Architecture</strong> - ARMv7/ARMv8 instruction analysis for mobile/embedded exploitation</li>
+            <li><strong>🌐 MIPS Support</strong> - Router and embedded device instruction sizing</li>
+            <li><strong>⚡ RISC-V Support</strong> - Next-generation IoT and embedded systems</li>
+        </ul>
+
+        <h2>🎯 What is this?</h2>
+        <p>A web-based calculator that provides <strong style="color: #00ff88;">exact instruction sizes</strong> for x86 assembly instructions, designed specifically for exploit developers working with ROP (Return-Oriented Programming) chains.</p>
+        
+        <h3>🔍 Why Precision Matters</h3>
+        <p>In exploit development, every byte counts:</p>
+        <ul>
+            <li><strong>Buffer overflow constraints</strong> require exact payload sizes</li>
+            <li><strong>Shellcode optimization</strong> needs minimal instruction footprints</li>
+            <li><strong>ROP chain construction</strong> demands precise stack calculations</li>
+            <li><strong>Badchar avoidance</strong> relies on accurate size estimations</li>
+        </ul>
+
+        <h2>🚀 Features</h2>
+        
+        <h3>📊 Single Gadget Analysis</h3>
+        <p>Calculate individual instruction sizes with real x86 encoding precision:</p>
+        <div class="code-block">
+mov eax, 0        ; 5 bytes (B8 00 00 00 00)
+xor eax, eax      ; 2 bytes (31 C0) - Better!
+pop eax           ; 1 byte  (58)
+        </div>
+
+        <h3>🔗 ROP Chain Analysis</h3>
+        <p>Analyze complete chains with automatic gadget grouping:</p>
+        <div class="code-block">
+pop eax ; ret           ; 2 bytes (offset: +0)
+neg eax ; ret           ; 2 bytes (offset: +2)
+xchg eax, ebp ; ret     ; 2 bytes (offset: +4)
+        </div>
+
+        <h3>🎯 Accurate Encoding Database</h3>
+        <ul>
+            <li><strong>1000+ instruction patterns</strong> with exact byte sizes</li>
+            <li><strong>Real x86 opcode mappings</strong> (not conservative estimates)</li>
+            <li><strong>ModR/M byte calculations</strong> for memory operations</li>
+            <li><strong>Immediate value handling</strong> for different data sizes</li>
+        </ul>
+
+        <h2>🎮 Usage Examples</h2>
+        
+        <h3>Basic Instruction Analysis</h3>
+        <div class="code-block">
+# Input
+pop eax ; ret
+
+# Output
+Instructions Analysis: pop eax ; ret (2 bytes)
+Total Instruction Size: 2 bytes
+        </div>
+
+        <h3>Complex ROP Chain</h3>
+        <div class="code-block">
+# Input
+pop eax ; ret
+neg eax ; ret
+mov eax, [eax] ; ret
+add eax, ebp ; ret
+
+# Output
+Gadget #1: pop eax ; ret (2 bytes, offset: +0)
+Gadget #2: neg eax ; ret (2 bytes, offset: +2)
+Gadget #3: mov eax, [eax] ; ret (3 bytes, offset: +4)
+Gadget #4: add eax, ebp ; ret (3 bytes, offset: +7)
+Total Size: 10 bytes
+        </div>
+
+        <h2>🛠️ Technical Details</h2>
+        
+        <h3>Supported Architectures</h3>
+        <ul>
+            <li>✅ <strong>x86 (32-bit)</strong> - Complete instruction database</li>
+            <li>✅ <strong>x64 (64-bit)</strong> - Core instruction support</li>
+        </ul>
+
+        <h3>Instruction Categories</h3>
+        <ul>
+            <li><strong>Single-byte:</strong> ret, nop, push eax, pop eax, inc eax, etc.</li>
+            <li><strong>Two-byte:</strong> Register operations, memory moves, arithmetic</li>
+            <li><strong>Multi-byte:</strong> Immediate values, displacement addressing</li>
+            <li><strong>Special:</strong> retn 0x04, conditional jumps, calls</li>
+        </ul>
+
+        <h3>Encoding Accuracy</h3>
+        <p>Based on Intel x86 instruction encoding format:</p>
+        <div class="code-block" style="text-align: center;">
+[Prefixes] [Opcode] [ModR/M] [SIB] [Displacement] [Immediate]
+        </div>
+
+        <h2>🎓 Educational Use</h2>
+        <p>Perfect for:</p>
+        <ul>
+            <li><strong>🎯 OSED Certification</strong> prep (EXP-301)</li>
+            <li><strong>🛡️ Exploit Development</strong> training</li>
+            <li><strong>🔬 Security Research</strong> and analysis</li>
+            <li><strong>📚 Assembly Programming</strong> education</li>
+            <li><strong>🧩 Reverse Engineering</strong> practice</li>
+        </ul>
+
+        <h2>🤝 Reporting Issues</h2>
+        <p>Please include:</p>
+        <ul>
+            <li>The exact instruction that's wrong</li>
+            <li>Expected vs actual size</li>
+            <li>Reference documentation (Intel manual page)</li>
+            <li>Contact me: <a href="https://www.linkedin.com/in/mhzcyber/" style="color: #00ff88;">LinkedIn Profile</a></li>
+        </ul>
+
+        <div class="footer">
+            <p>Made with ❤️ for the exploit development community</p>
+            <div>
+                <a href="https://the-science-of-hacking.com" target="_blank">🌐 Website</a>
+                <a href="mailto:contact@the-science-of-hacking.com">📧 Contact</a>
+                <a href="https://twitter.com/sci_of_hacking" target="_blank">🐦 Twitter</a>
+                <a href="https://www.linkedin.com/in/mhzcyber/" target="_blank">💼 LinkedIn</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

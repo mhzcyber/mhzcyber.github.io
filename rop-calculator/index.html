@@ -252,6 +252,12 @@
 <body>
     <div class="container">
         <h1>🔗 ROP Chain Calculator</h1>
+        <div style="text-align: center; margin-bottom: 20px; color: #888; font-size: 14px;">
+            Created by <strong style="color: #00ff88;">Mohammad Hussam Alzeyyat</strong>
+        </div>
+        <div style="text-align: center; margin-bottom: 30px;">
+            <a href="https://the-science-of-hacking.com/rop-calculator/doc.html" target="_blank" class="button" style="background: linear-gradient(45deg, #00cc6a, #00ff88); color: #000; text-decoration: none; display: inline-block;">📚 Documentation</a>
+        </div>
         
         <div class="tabs">
             <button class="tab active" onclick="switchTab('single')">Single Gadget</button>
@@ -313,6 +319,174 @@ mov eax, [eax]; ret"></textarea>
             <button class="button" onclick="analyzeChain()">Analyze Chain</button>
             
             <div id="analyzerResults" class="results" style="display: none;"></div>
+        </div>
+
+        <!-- Documentation Tab -->
+        <div id="docs" class="tab-content">
+            <div class="docs-content" style="max-height: 70vh; overflow-y: auto; padding: 20px; background: rgba(0, 0, 0, 0.2); border-radius: 10px; line-height: 1.6;">
+                
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <h2 style="color: #00ff88; margin-bottom: 10px;">📚 Documentation</h2>
+                    <p style="color: #ccc;">Precise x86 instruction size analysis for exploit development</p>
+                </div>
+
+                <div class="doc-section" style="margin-bottom: 30px;">
+                    <h3 style="color: #00ff88; margin-bottom: 15px; border-bottom: 2px solid rgba(0, 255, 136, 0.3); padding-bottom: 8px;">🚧 Roadmap & Upcoming Features</h3>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <h4 style="color: #00ff88; margin-bottom: 10px;">🎯 Coming Soon</h4>
+                        <ul style="color: #ccc; margin-left: 20px;">
+                            <li style="margin-bottom: 8px;"><strong style="color: #00ff88;">🔥 Full x64 Support</strong> - Complete 64-bit instruction database with REX prefixes</li>
+                            <li style="margin-bottom: 8px;"><strong style="color: #00ff88;">💪 ARM Architecture</strong> - ARMv7/ARMv8 instruction analysis for mobile/embedded exploitation</li>
+                            <li style="margin-bottom: 8px;"><strong style="color: #00ff88;">🌐 MIPS Support</strong> - Router and embedded device instruction sizing</li>
+                            <li style="margin-bottom: 8px;"><strong style="color: #00ff88;">⚡ RISC-V Support</strong> - Next-generation IoT and embedded systems</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="doc-section" style="margin-bottom: 30px;">
+                    <h3 style="color: #00ff88; margin-bottom: 15px; border-bottom: 2px solid rgba(0, 255, 136, 0.3); padding-bottom: 8px;">🎯 What is this?</h3>
+                    <p style="color: #ccc; margin-bottom: 15px;">A web-based calculator that provides <strong style="color: #00ff88;">exact instruction sizes</strong> for x86 assembly instructions, designed specifically for exploit developers working with ROP (Return-Oriented Programming) chains.</p>
+                    
+                    <h4 style="color: #00ff88; margin-bottom: 10px;">🔍 Why Precision Matters</h4>
+                    <p style="color: #ccc; margin-bottom: 10px;">In exploit development, every byte counts:</p>
+                    <ul style="color: #ccc; margin-left: 20px;">
+                        <li style="margin-bottom: 5px;"><strong style="color: #00ff88;">Buffer overflow constraints</strong> require exact payload sizes</li>
+                        <li style="margin-bottom: 5px;"><strong style="color: #00ff88;">Shellcode optimization</strong> needs minimal instruction footprints</li>
+                        <li style="margin-bottom: 5px;"><strong style="color: #00ff88;">ROP chain construction</strong> demands precise stack calculations</li>
+                        <li style="margin-bottom: 5px;"><strong style="color: #00ff88;">Badchar avoidance</strong> relies on accurate size estimations</li>
+                    </ul>
+                </div>
+
+                <div class="doc-section" style="margin-bottom: 30px;">
+                    <h3 style="color: #00ff88; margin-bottom: 15px; border-bottom: 2px solid rgba(0, 255, 136, 0.3); padding-bottom: 8px;">🚀 Features</h3>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <h4 style="color: #00ff88; margin-bottom: 10px;">📊 Single Gadget Analysis</h4>
+                        <p style="color: #ccc; margin-bottom: 10px;">Calculate individual instruction sizes with real x86 encoding precision:</p>
+                        <div class="hex-display" style="margin-bottom: 15px; font-size: 14px;">
+mov eax, 0        ; 5 bytes (B8 00 00 00 00)<br>
+xor eax, eax      ; 2 bytes (31 C0) - Better!<br>
+pop eax           ; 1 byte  (58)
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 20px;">
+                        <h4 style="color: #00ff88; margin-bottom: 10px;">🔗 ROP Chain Analysis</h4>
+                        <p style="color: #ccc; margin-bottom: 10px;">Analyze complete chains with automatic gadget grouping:</p>
+                        <div class="hex-display" style="margin-bottom: 15px; font-size: 14px;">
+pop eax ; ret           ; 2 bytes (offset: +0)<br>
+neg eax ; ret           ; 2 bytes (offset: +2)<br>
+xchg eax, ebp ; ret     ; 2 bytes (offset: +4)
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 style="color: #00ff88; margin-bottom: 10px;">🎯 Accurate Encoding Database</h4>
+                        <ul style="color: #ccc; margin-left: 20px;">
+                            <li style="margin-bottom: 5px;"><strong style="color: #00ff88;">1000+ instruction patterns</strong> with exact byte sizes</li>
+                            <li style="margin-bottom: 5px;"><strong style="color: #00ff88;">Real x86 opcode mappings</strong> (not conservative estimates)</li>
+                            <li style="margin-bottom: 5px;"><strong style="color: #00ff88;">ModR/M byte calculations</strong> for memory operations</li>
+                            <li style="margin-bottom: 5px;"><strong style="color: #00ff88;">Immediate value handling</strong> for different data sizes</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="doc-section" style="margin-bottom: 30px;">
+                    <h3 style="color: #00ff88; margin-bottom: 15px; border-bottom: 2px solid rgba(0, 255, 136, 0.3); padding-bottom: 8px;">🎮 Usage Examples</h3>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <h4 style="color: #00ff88; margin-bottom: 10px;">Basic Instruction Analysis</h4>
+                        <div class="hex-display" style="margin-bottom: 10px; font-size: 14px;">
+# Input<br>
+pop eax ; ret<br><br>
+# Output<br>
+Instructions Analysis: pop eax ; ret (2 bytes)<br>
+Total Instruction Size: 2 bytes
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 style="color: #00ff88; margin-bottom: 10px;">Complex ROP Chain</h4>
+                        <div class="hex-display" style="font-size: 14px;">
+# Input<br>
+pop eax ; ret<br>
+neg eax ; ret<br>
+mov eax, [eax] ; ret<br>
+add eax, ebp ; ret<br><br>
+# Output<br>
+Gadget #1: pop eax ; ret (2 bytes, offset: +0)<br>
+Gadget #2: neg eax ; ret (2 bytes, offset: +2)<br>
+Gadget #3: mov eax, [eax] ; ret (3 bytes, offset: +4)<br>
+Gadget #4: add eax, ebp ; ret (3 bytes, offset: +7)<br>
+Total Size: 10 bytes
+                        </div>
+                    </div>
+                </div>
+
+                <div class="doc-section" style="margin-bottom: 30px;">
+                    <h3 style="color: #00ff88; margin-bottom: 15px; border-bottom: 2px solid rgba(0, 255, 136, 0.3); padding-bottom: 8px;">🛠️ Technical Details</h3>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <h4 style="color: #00ff88; margin-bottom: 10px;">Supported Architectures</h4>
+                        <ul style="color: #ccc; margin-left: 20px;">
+                            <li style="margin-bottom: 5px;">✅ <strong style="color: #00ff88;">x86 (32-bit)</strong> - Complete instruction database</li>
+                            <li style="margin-bottom: 5px;">✅ <strong style="color: #00ff88;">x64 (64-bit)</strong> - Core instruction support</li>
+                        </ul>
+                    </div>
+
+                    <div style="margin-bottom: 20px;">
+                        <h4 style="color: #00ff88; margin-bottom: 10px;">Instruction Categories</h4>
+                        <ul style="color: #ccc; margin-left: 20px;">
+                            <li style="margin-bottom: 5px;"><strong style="color: #00ff88;">Single-byte:</strong> <code style="background: rgba(0,0,0,0.4); padding: 2px 4px; border-radius: 3px;">ret</code>, <code style="background: rgba(0,0,0,0.4); padding: 2px 4px; border-radius: 3px;">nop</code>, <code style="background: rgba(0,0,0,0.4); padding: 2px 4px; border-radius: 3px;">push eax</code>, <code style="background: rgba(0,0,0,0.4); padding: 2px 4px; border-radius: 3px;">pop eax</code>, <code style="background: rgba(0,0,0,0.4); padding: 2px 4px; border-radius: 3px;">inc eax</code>, etc.</li>
+                            <li style="margin-bottom: 5px;"><strong style="color: #00ff88;">Two-byte:</strong> Register operations, memory moves, arithmetic</li>
+                            <li style="margin-bottom: 5px;"><strong style="color: #00ff88;">Multi-byte:</strong> Immediate values, displacement addressing</li>
+                            <li style="margin-bottom: 5px;"><strong style="color: #00ff88;">Special:</strong> <code style="background: rgba(0,0,0,0.4); padding: 2px 4px; border-radius: 3px;">retn 0x04</code>, conditional jumps, calls</li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h4 style="color: #00ff88; margin-bottom: 10px;">Encoding Accuracy</h4>
+                        <p style="color: #ccc; margin-bottom: 10px;">Based on Intel x86 instruction encoding format:</p>
+                        <div class="hex-display" style="font-size: 14px; text-align: center;">
+[Prefixes] [Opcode] [ModR/M] [SIB] [Displacement] [Immediate]
+                        </div>
+                    </div>
+                </div>
+
+                <div class="doc-section" style="margin-bottom: 30px;">
+                    <h3 style="color: #00ff88; margin-bottom: 15px; border-bottom: 2px solid rgba(0, 255, 136, 0.3); padding-bottom: 8px;">🎓 Educational Use</h3>
+                    <p style="color: #ccc; margin-bottom: 10px;">Perfect for:</p>
+                    <ul style="color: #ccc; margin-left: 20px;">
+                        <li style="margin-bottom: 5px;"><strong style="color: #00ff88;">🎯 OSED Certification</strong> prep (EXP-301)</li>
+                        <li style="margin-bottom: 5px;"><strong style="color: #00ff88;">🛡️ Exploit Development</strong> training</li>
+                        <li style="margin-bottom: 5px;"><strong style="color: #00ff88;">🔬 Security Research</strong> and analysis</li>
+                        <li style="margin-bottom: 5px;"><strong style="color: #00ff88;">📚 Assembly Programming</strong> education</li>
+                        <li style="margin-bottom: 5px;"><strong style="color: #00ff88;">🧩 Reverse Engineering</strong> practice</li>
+                    </ul>
+                </div>
+
+                <div class="doc-section" style="margin-bottom: 30px;">
+                    <h3 style="color: #00ff88; margin-bottom: 15px; border-bottom: 2px solid rgba(0, 255, 136, 0.3); padding-bottom: 8px;">🤝 Reporting Issues</h3>
+                    <p style="color: #ccc; margin-bottom: 10px;">Please include:</p>
+                    <ul style="color: #ccc; margin-left: 20px;">
+                        <li style="margin-bottom: 5px;">The exact instruction that's wrong</li>
+                        <li style="margin-bottom: 5px;">Expected vs actual size</li>
+                        <li style="margin-bottom: 5px;">Reference documentation (Intel manual page)</li>
+                        <li style="margin-bottom: 10px;">Contact me: <a href="https://www.linkedin.com/in/mhzcyber/" style="color: #00ff88; text-decoration: none;" target="_blank">LinkedIn Profile</a></li>
+                    </ul>
+                </div>
+
+                <div style="text-align: center; margin-top: 40px; padding: 20px; background: rgba(0, 255, 136, 0.05); border-radius: 10px; border: 1px solid rgba(0, 255, 136, 0.2);">
+                    <p style="color: #00ff88; font-weight: bold; margin-bottom: 10px;">Made with ❤️ for the exploit development community</p>
+                    <div style="color: #ccc;">
+                        <a href="https://the-science-of-hacking.com" style="color: #00ff88; text-decoration: none; margin: 0 10px;" target="_blank">🌐 Website</a>
+                        <a href="mailto:contact@the-science-of-hacking.com" style="color: #00ff88; text-decoration: none; margin: 0 10px;">📧 Contact</a>
+                        <a href="https://twitter.com/sci_of_hacking" style="color: #00ff88; text-decoration: none; margin: 0 10px;" target="_blank">🐦 Twitter</a>
+                    </div>
+                </div>
+
+            </div>
         </div>
     </div>
 
